@@ -32,3 +32,11 @@ def preprocessing_lable_csv(filepath:str,delimiter:str):
         return collection_result
 
 
+
+def remove_missing_values(row):
+    for value in row:
+        if value == "":
+            return False
+    return True
+
+
