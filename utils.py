@@ -33,6 +33,31 @@ def preprocessing_lable_csv(filepath:str,delimiter:str):
 
 
 
+def join_data(agg_row,label_rows):
+    agg_row = agg_row._asdict()
+    for label_row in label_rows:
+        if agg_row['Codigo'] == label_row.Codigo:
+            agg_row['Estado'] = label_row.Estado
+            agg_row['Governador'] = label_row.Governador
+            return beam.Row(Regiao=agg_row['Regiao'],
+                            Estado=agg_row['Estado'],
+                            UF=agg_row['UF'],
+                            Governador=agg_row['Governador'],
+                            TotalCasos=agg_row['totalCasos'],
+                            TotalObitos=agg_row['totalObitos'])
+        else:
+            pass
+
+    agg_row['Estado'] = ""
+    agg_row['Governador'] = ""
+    return beam.Row(Regiao=agg_row['Regiao'],
+                        Estado=agg_row['Estado'],
+                        UF=agg_row['UF'],
+                        Governador=agg_row['Governador'],
+                        TotalCasos=agg_row['totalCasos'],
+                        TotalObitos=agg_row['totalObitos'])        
+
+
 def remove_missing_values(row):
     for value in row:
         if value == "":

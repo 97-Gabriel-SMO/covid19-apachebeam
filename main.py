@@ -16,6 +16,8 @@ def main():
             | beam.GroupBy('Codigo','Regiao','UF')
                   .aggregate_field('casosNovos', sum, 'totalCasos')
                   .aggregate_field('obitosNovos', sum, 'totalObitos')
+            | beam.Map(join_data,label_rows)
+            | beam.Filter(remove_missing_values)
             )
 
 
