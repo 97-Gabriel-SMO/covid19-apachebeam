@@ -4,6 +4,7 @@ Autor: Gabriel Santos Madruga Oliveira
 """
 
 import csv
+from typing import NamedTuple
 import apache_beam as beam
 import json
 
@@ -40,7 +41,7 @@ def preprocessing_lable(filepath: str, delimiter: str):
         return collection_result
 
 
-def join_data(agg_row, label_rows):
+def join_data(agg_row:beam.Row, label_rows:NamedTuple):
     agg_row = agg_row._asdict()
     for label_row in label_rows:
         if agg_row["Codigo"] == label_row.Codigo:
@@ -69,20 +70,20 @@ def join_data(agg_row, label_rows):
     )
 
 
-def remove_missing_values(row):
+def remove_missing_values(row:beam.Row):
     for value in row:
         if value == "":
             return False
     return True
 
 
-def format_output_csv(row) -> str:
+def format_output_csv(row:beam.Row):
     result = ""
     for value in list(row):
         result = result + str(value) + ";"
     return result
 
 
-def format_output_json(rows) -> str:
+def format_output_json(rows:beam.Row):
     response = rows.as_dict()
     return json.dumps(response, ensure_ascii=False)

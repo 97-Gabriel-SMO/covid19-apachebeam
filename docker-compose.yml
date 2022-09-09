@@ -1,0 +1,9 @@
+version: '3.8'
+
+services:
+  pipeline:
+    build: .
+    volumes:
+      - ./output:/app/output
+      - ./logs:/app/logs
+    command: python src/main.py -d HIST_PAINEL_COVIDBR_28set2020.csv -l EstadosIBGE.csv 
