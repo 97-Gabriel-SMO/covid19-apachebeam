@@ -23,7 +23,8 @@ def main(datafile: str, labelfile: str):
         processed_data = (
             pipeline
             | "Create PColletion" >> beam.Create(csv_rows)
-            | "Agg data" >> beam.GroupBy("Codigo", "Regiao", "UF")
+            | "Agg data"
+            >> beam.GroupBy("Codigo", "Regiao", "UF")
             .aggregate_field("casosNovos", sum, "totalCasos")
             .aggregate_field("obitosNovos", sum, "totalObitos")
             | "Join State and Covid data" >> beam.Map(join_data, label_rows)
