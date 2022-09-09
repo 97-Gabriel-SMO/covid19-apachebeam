@@ -2,18 +2,20 @@
 
 Autor: Gabriel Santos Madruga Oliveira
 """
+
+import click 
 import apache_beam as beam
 from utils import *
 
 
-HEADER = 'Regiao;Estado;UF;Governador;TotalCasos;TotalObitos'
-
-
-def main():
+@click.command()
+@click.option('--datafile','-d',type=str,prompt='Data file:  ', help='File with covid-19 statistics.')
+@click.option('--labelfile','-l',type = str ,prompt='Label file:  ', help='File with states data.')
+def main(datafile:str,labelfile:str):
     csv_rows = preprocessing_data(
-        "data/HIST_PAINEL_COVIDBR_28set2020.csv", delimiter=";"
+        "data/" + datafile, delimiter=";"
     )
-    label_rows = preprocessing_lable("data/EstadosIBGE.csv", delimiter=";")
+    label_rows = preprocessing_lable("data/"+labelfile, delimiter=";")
     with beam.Pipeline() as pipeline:
         processed_data = (
             pipeline
@@ -30,7 +32,7 @@ def main():
             | "Write to CSV output file"
             >> beam.io.WriteToText(
                 "output/test_response",
-                header=(HEADER),
+                header=('Regiao;Estado;UF;Governador;TotalCasos;TotalObitos'),
                 file_name_suffix=".csv",
                 shard_name_template="",
             )
