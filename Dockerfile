@@ -1,5 +1,5 @@
-FROM apache/beam_python3.7_sdk:2.40.0
-
-COPY . /app/
-
-ENTRYPOINT ["python3","main.py"]
+FROM python:latest
+ENV PYTHONUNBUFFERED 1
+WORKDIR /app
+COPY . .
+RUN pip install -r requirements.txt
