@@ -26,6 +26,8 @@ O fluxo de dados foi estruturado da seguinte forma:
 
 ## Utilização 
 
+O código pode ser executado tanto localmente quanto em um Docker container. Os arquivos de input devem estar localizados no diretório `data` enquanto os arquivos de output devem estar localizados no diretório `output`. 
+
 ### Local
 
 A versão do Python utilizada para a execução do código foi 3.10.4.
@@ -36,12 +38,18 @@ As bibliotecas necessárias para a execução do código se encontram no arquivo
 A partir da biblioteca `click` podemos realizar o comando para a execução do programa a partir da linha de comando:
 - `python src/main.py -d [ARQUIVO_COM_DADOS_COVID] -l [ARQUIVO_COM_DADOS_ESTADOS]`
 
-Observação: Os arquivos devem estar na pasta `data`.
-
 Exemplo de execução com os arquivos com o dataset inicial que esta no repositório.
 
 - `python src/main.py -d HIST_PAINEL_COVIDBR_28set2020.csv -l EstadosIBGE.csv`
 
 ### Docker
 
+A imagem utilizada para a construção do container foi a ultima `python:3.10.7-bullseye`, porém imagino que não haja problema na execução da mesma na maioria das imagens python recentes.
 
+Para a execução, devemos inserir no arquivo `docker-compose.yml` dentro da chave `command:` o comando abaixo:
+
+- `python src/main.py -d [ARQUIVO_COM_DADOS_COVID] -l [ARQUIVO_COM_DADOS_ESTADOS]`
+
+Após isso, é necessario executar o comando o Docker:
+
+- `docker compose up` 
