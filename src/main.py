@@ -22,12 +22,12 @@ def main(datafile: str, labelfile: str):
     with beam.Pipeline() as pipeline:
         processed_data = (
             pipeline
-            | beam.Create(csv_rows)
-            | beam.GroupBy("Codigo", "Regiao", "UF")
+            | "Create PColletion" >> beam.Create(csv_rows)
+            | "Agg data" >> beam.GroupBy("Codigo", "Regiao", "UF")
             .aggregate_field("casosNovos", sum, "totalCasos")
             .aggregate_field("obitosNovos", sum, "totalObitos")
-            | beam.Map(join_data, label_rows)
-            | beam.Filter(remove_missing_values)
+            | "Join State and Covid data" >> beam.Map(join_data, label_rows)
+            | "Remove Empty State Values" >> beam.Filter(remove_missing_values)
         )
         LOGGER.debug("Generating csv output file...")
         data_export_csv = (
@@ -35,7 +35,7 @@ def main(datafile: str, labelfile: str):
             | "Format CSV string" >> beam.Map(format_output_csv)
             | "Write to CSV output file"
             >> beam.io.WriteToText(
-                "output/test_response",
+                "output/result",
                 header=("Regiao;Estado;UF;Governador;TotalCasos;TotalObitos"),
                 file_name_suffix=".csv",
                 shard_name_template="",
@@ -46,19 +46,19 @@ def main(datafile: str, labelfile: str):
         data_export_json = (
             processed_data
             | "Format JSON string" >> beam.Map(format_output_json)
-            | beam.combiners.ToList()
+            | "Transform data in List" >> beam.combiners.ToList()
             | "Write to JSON output file"
             >> beam.io.WriteToText(
-                "output/test_response",
+                "output/result",
                 file_name_suffix=".json",
                 shard_name_template="",
             )
         )
         LOGGER.debug("DONE")
-        LOGGER.debug("Files in output directory.")
+        LOGGER.info("Files in output directory.")
 
 
 if __name__ == "__main__":
     logging.basicConfig(filename="logs/log.cur")
-    LOGGER.setLevel(logging.INFO)
+    LOGGER.setLevel(logging.DEBUG)
     main()
