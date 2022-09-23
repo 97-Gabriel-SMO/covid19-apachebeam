@@ -1,4 +1,4 @@
-# Case Técnico | Data Engineer Jr. | Hurb
+# Case Técnico 
 
 #### Gabriel Santos Madruga Oliveira
  
